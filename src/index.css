@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* This is needed to allow the charts to resize when the browser is shrinking. */
+/* Source: https://github.com/jtblin/angular-chart.js/issues/614#issuecomment-540512568*/
+canvas
+{
+  width: 100% !important;
+  height: 100% !important;
+}

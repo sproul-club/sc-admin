@@ -2,35 +2,42 @@ import React from 'react';
 import LoginPage from './pages/LoginPage';
 import OverviewPage from './pages/OverviewPage';
 import RSOListPage from './pages/RSOListPage';
-import UsersPage from './pages/UsersPage';
+import ClubsPage from './pages/ClubsPage';
+import TagsPage from './pages/TagsPage';
+import MoreStatsPage from './pages/MoreStatsPage';
 
 export const ROUTE_CONFIG = {
-  DEFAULT: {
-    name: 'Default',
-    path: '/',
-    widget: () => null,
-    hidden: true
+  HOME: {
+    name: 'Overview',
+    path: '/overview',
+    widget: () => <OverviewPage />
   },
   LOGIN: {
     name: 'Login',
     path: '/login',
-    widget: () => <LoginPage />
-  },
-  OVERVIEW: {
-    name: 'Overview',
-    path: '/overview',
-    widget: () => <OverviewPage />
+    widget: () => <LoginPage />,
+    hidden: true
   },
   RSO: {
     name: 'RSO List',
     path: '/rso',
     widget: () => <RSOListPage />
   },
-  USERS: {
-    name: 'Users',
-    path: '/users',
-    widget: () => <UsersPage />
+  CLUBS: {
+    name: 'Clubs',
+    path: '/clubs',
+    widget: () => <ClubsPage />
   },
+  TAGS: {
+    name: 'Tags',
+    path: '/tags',
+    widget: () => <TagsPage />
+  },
+  MORE_STATS: {
+    name: 'More Stats',
+    path: '/more-stats',
+    widget: () => <MoreStatsPage />
+  }
 };
 
 export const ROUTE_MAP = {};

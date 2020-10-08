@@ -1,5 +1,6 @@
 import React from 'react';
-import { Stack, Box, Heading, Icon } from '@chakra-ui/core';
+
+import { Flex, Stack, Box, Heading, Icon } from '@chakra-ui/core';
 
 const ERROR_MESSAGES = {
   404: 'Oh no! This page does not exist!',
@@ -8,17 +9,17 @@ const ERROR_MESSAGES = {
 }
 
 const ErrorPage = ({ errorCode, errorMsg }) => {
-  let finalErrorMsg = errorMsg || ERROR_MESSAGES[errorCode];
-  if (typeof finalErrorMsg !== 'string')
-    finalErrorMsg = `An unexpected error happened: Code ${errorCode}`;
+  let finalErrorMsg = errorMsg || ERROR_MESSAGES[errorCode] || 'An unexpected error happened!';
 
   return (
-    <Stack spacing={8} align="center" padding="32px">
-      <Box paddingBottom="2.0rem" />
-      <Icon name="warning" size="10rem" color="red.500"></Icon>
-      <Heading as="h1" size="xl">Error {errorCode}</Heading>
-      <Heading as="h4" size="md">{finalErrorMsg}</Heading>
-    </Stack>
+    <Flex align="center" justify="center" minHeight="100vh">
+      <Stack spacing={8} align="center" padding="32px">
+        <Box paddingBottom="2.0rem" />
+        <Icon name="warning" size="10rem" color="red.500"></Icon>
+        {errorCode && <Heading as="h1" size="xl">Error {errorCode}</Heading>}
+        <Heading as="h4" size="md">{finalErrorMsg}</Heading>
+      </Stack>
+    </Flex>
   );
 };
 

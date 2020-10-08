@@ -1,24 +1,34 @@
 {
   "name": "sc-admin-app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@chakra-ui/core": "^0.8.0",
-    "@emotion/core": "^10.0.35",
-    "@emotion/styled": "^10.0.27",
-    "@reduxjs/toolkit": "^1.4.0",
-    "emotion-theming": "^10.0.27",
+    "@chakra-ui/core": "^1.0.0-rc.5",
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/react-fontawesome": "^0.1.11",
+    "axios": "^0.20.0",
+    "chart.js": "^2.9.3",
+    "easy-peasy": "^3.3.1",
+    "fast-deep-equal": "^3.1.3",
     "hookrouter": "^1.2.3",
+    "js-file-download": "^0.4.12",
     "react": "^16.13.1",
+    "react-async": "^10.0.1",
+    "react-chartjs-2": "^2.10.0",
+    "react-context-hook": "^2.2.0",
     "react-dom": "^16.13.1",
-    "react-hook-form": "^6.8.6",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.3",
+    "react-toastify": "^6.0.9",
+    "source-map-explorer": "^2.5.0",
+    "use-debounce": "^5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"
