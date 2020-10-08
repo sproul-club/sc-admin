@@ -82,4 +82,39 @@ const TOKENS = {
   refresh: new AuthToken(REFRESH_TOKEN_KEY, REFRESH_TOKEN_EXPIRE_KEY)
 }
 
-export { API, TOKENS };
+class AuthManager {
+  constructor({
+    accessAuthToken,
+    refreshAuthToken,
+    afterSignIn = () => {},
+    afterSignOut = () => {},
+  }) {
+    this.accessToken = accessAuthToken;
+    this.refreshToken = refreshAuthToken;
+
+    this.afterSignIn = afterSignIn;
+    this.afterSignOut = afterSignOut;
+  }
+
+  isLoggedIn() {
+    const hasAccess = this.accessToken.exists() && !this.accessToken.hasExpired();
+    const hasRefresh = this.refreshToken.exists() && !this.refreshToken.hasExpired();
+    return hasAccess && hasRefresh;
+  }
+
+  signIn({ access, refresh }) {
+    this.accessToken.set(access.token, access.expires);
+    this.refreshToken.set(refresh.token, refresh.expires);
+
+    this.afterSignIn();
+  }
+
+  signOut() {
+    this.accessToken.delete();
+    this.refreshToken.delete();
+
+    this.afterSignOut()
+  }
+}
+
+export { API, TOKENS, AuthManager };

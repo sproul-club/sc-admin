@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useTitle, navigate } from 'hookrouter';
-import { ROUTE_CONFIG } from '../routes';
+import { useTitle } from 'hookrouter';
 
 import {  Flex, Stack, Image } from '@chakra-ui/core';
 import { Heading, InputGroup, InputRightElement } from '@chakra-ui/core';
@@ -10,6 +9,7 @@ import logo from '../assets/logo.png';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { GlobalAuthManager } from '../utils/GlobalAuthManager';
 
 const LoginPage = () => {
   useTitle('Login - sproul.club Dashboard');
@@ -25,10 +25,14 @@ const LoginPage = () => {
     const password = event.target.password.value;
 
     setTimeout(() => {
-      if (email === 'admin@gmail.com' && password === 'admin') {
-        navigate(ROUTE_CONFIG.HOME.path);
-      }
       setIsSubmitting(false);
+
+      if (email === 'admin@gmail.com' && password === 'admin') {
+        GlobalAuthManager.signIn({
+          access: { token: 'example-token-access', expires: 3 * 1000000 },
+          refresh: { token: 'example-token-refresh', expires: 3 * 10000000 }
+        });
+      }
     }, 3000);
   }
 

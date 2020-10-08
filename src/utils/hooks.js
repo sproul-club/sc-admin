@@ -67,11 +67,13 @@ function useSimplePaginator(data, itemsPerPage, preview) {
 }
 
 function useDiffCheck(orig) {
-  const [original, setOriginal] = useState(orig);
+  const [original,] = useState(orig);
   const [copy, setCopy] = useState(orig);
   const [isSame, setSame] = useState(true);
 
-  useEffect(() => setSame(deepEqual(original, copy)), [copy]);
+  useEffect(() => {
+    setSame(deepEqual(original, copy));
+  }, [copy]);
 
   return [copy, setCopy, isSame];
 }

@@ -5,6 +5,7 @@ import logo from '../assets/logo.png';
 import { ROUTE_CONFIG } from '../routes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faDog, faBug } from '@fortawesome/free-solid-svg-icons';
+import { GlobalAuthManager } from '../utils/GlobalAuthManager';
 
 const THIRD_PARTY_LINKS = {
   SCOUT_APM: 'https://scoutapm.com/apps/182171',
@@ -19,9 +20,18 @@ const LinkMenuItem = ({ link, children }) => (
 
 const RouteLinkCollection = ({ showMenu, config }) => {
   let routeItems = []
-  for (let [routeKey, route] of Object.entries(config))
-    if (!route.hidden)
-      routeItems.push(<LinkMenuItem key={routeKey} link={route.path}>{route.name}</LinkMenuItem>);
+  for (let [routeKey, route] of Object.entries(config)) {
+    if (!route.hidden) {
+      routeItems.push(
+        <LinkMenuItem
+          key={routeKey}
+          link={route.path}
+        >
+          {route.name}
+        </LinkMenuItem>
+      );
+    }
+  }
 
   return (
     <Box
@@ -89,7 +99,7 @@ const NavbarHeader = () => {
             </a>
           </Button>
 
-          <Button bg="transparent" border="1px">
+          <Button bg="transparent" border="1px" onClick={() => GlobalAuthManager.signOut()}>
             Log out
           </Button>
         </ButtonGroup>

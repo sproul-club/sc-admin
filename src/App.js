@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useRoutes, useRedirect } from 'hookrouter';
+import { useRoutes, useRedirect, navigate } from 'hookrouter';
 import { ROUTE_MAP, ROUTE_CONFIG } from './routes';
 
 import { theme, ChakraProvider } from '@chakra-ui/core';
@@ -11,11 +11,17 @@ import ErrorPage from './pages/ErrorPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { GlobalAuthManager } from './utils/GlobalAuthManager';
+
 function App() {
   useRedirect('/', ROUTE_CONFIG.LOGIN.path);
 
   const routeResult = useRoutes(ROUTE_MAP);
   const renderedPage = routeResult || <ErrorPage errorCode={404} />;
+
+  const isLoggedIn = GlobalAuthManager.isLoggedIn();
+  if (!isLoggedIn)
+    navigate('/login');
 
   return (
     <ChakraProvider theme={theme}>
@@ -31,8 +37,8 @@ function App() {
         pauseOnHover
       />
 
-      <NavbarHeader />
-      {renderedPage}
+      {isLoggedIn && <NavbarHeader />}
+      {isLoggedIn ? renderedPage : ROUTE_CONFIG.LOGIN.widget()}
     </ChakraProvider>
   );
 }

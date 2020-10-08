@@ -10,37 +10,6 @@ import { faRedo } from '@fortawesome/free-solid-svg-icons';
 import { API } from '../utils/backendClient';
 import DataLoaderPage from './DataLoaderPage';
 
-async function fetchMoreStats() {
-  const [tagUsage, socialMediaUsage, clubReqStats, picStats] = await Promise.all([
-    API.get('/api/monitor/tags/list'),
-    API.get('/api/monitor/more-stats/social-media'),
-    API.get('/api/monitor/more-stats/club-reqs'),
-    API.get('/api/monitor/more-stats/pic-stats'),
-  ]);
-
-  return {
-    tagUsage: tagUsage.data,
-    socialMedia: socialMediaUsage.data[0],
-    clubReqs: clubReqStats.data[0],
-    picStats: picStats.data[0],
-  }
-}
-
-const Card = props => (
-  <Box px="4" py="5" rounded="sm" shadow="lg" {...props} />
-);
-
-const TitleHeading = ({ children, onReload }) => (
-  <Flex justify="space-between">
-    <Heading as="h3" size="lg">{children}</Heading>
-    {onReload &&
-      <Button onClick={onReload}>
-        <FontAwesomeIcon icon={faRedo}/>
-      </Button>
-    }
-  </Flex>
-);
-
 const BG_RAINBOW_COLORS = [
   'rgba(255, 99, 132, 0.2)',
   'rgba(255, 159, 64, 0.2)',
@@ -60,6 +29,26 @@ const BORDER_RAINBOW_COLORS = [
   'rgb(153, 102, 255)',
   'rgb(201, 203, 207)',
 ];
+
+async function fetchMoreStats() {
+  const [tagUsage, socialMediaUsage, clubReqStats, picStats] = await Promise.all([
+    API.get('/api/monitor/tags/list'),
+    API.get('/api/monitor/more-stats/social-media'),
+    API.get('/api/monitor/more-stats/club-reqs'),
+    API.get('/api/monitor/more-stats/pic-stats'),
+  ]);
+
+  return {
+    tagUsage: tagUsage.data,
+    socialMedia: socialMediaUsage.data[0],
+    clubReqs: clubReqStats.data[0],
+    picStats: picStats.data[0],
+  }
+}
+
+const Card = props => (
+  <Box px="4" py="5" rounded="sm" shadow="lg" {...props} />
+);
 
 function generateColors(numDataPoints, colorList) {
   const colors = [];
