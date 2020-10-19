@@ -52,12 +52,10 @@ async function downloadClubs() {
   fileDownload(res.data, 'clubs.csv');
 }
 
-async function deleteClub(clubEmail) {
+async function deleteClub(club) {
   try {
-    // TODO: uncomment this !!!!!!!!!!!!!!!!!!!!!!!!!
-
-    // const res = await API.delete(`/api/monitor/club/${clubEmail}`);
-    toast.success('Successfully deleted club!');
+    await API.delete(`/api/monitor/club/${club.owner}`);
+    toast.success(`Successfully deleted club: '${club.name}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
     toast.error(apiError || err.message);
@@ -166,7 +164,7 @@ const ClubListComponent = ({ clubs, setClubList }) => {
               club={selectedClub}
               ctrl={deleteModalCtrl}
               onDelete={async (club) => {
-                await onDataListChange(() => deleteClub(club.owner));
+                await onDataListChange(() => deleteClub(club));
                 setSelectedClub(null);
               }}
             />

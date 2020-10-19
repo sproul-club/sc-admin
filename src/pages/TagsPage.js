@@ -59,10 +59,8 @@ async function downloadTags() {
 
 async function addTag(tag) {
   try {
-    // TODO: uncomment this !!!!!!!!!!!!!!!!!!!!!!!!!
-
-    // const res = await API.delete(`/api/monitor/tag/${tagId}`);
-    toast.success(`Successfully added tag: ${tag.name}`);
+    await API.post(`/api/monitor/tags`, { name: tag.name });
+    toast.success(`Successfully added tag: '${tag.name}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
     toast.error(apiError || err.message);
@@ -71,10 +69,8 @@ async function addTag(tag) {
 
 async function editTag(tag, newTag) {
   try {
-    // TODO: uncomment this !!!!!!!!!!!!!!!!!!!!!!!!!
-
-    // const res = await API.delete(`/api/monitor/tag/${tagId}`);
-    toast.success(`Successfully changed tag name from ${tag.name} to ${newTag.name}`);
+    await API.put(`/api/monitor/tags/${tag._id}`, { name: newTag.name });
+    toast.success(`Successfully changed tag name from '${tag.name}'' to '${newTag.name}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
     toast.error(apiError || err.message);
@@ -83,10 +79,8 @@ async function editTag(tag, newTag) {
 
 async function deleteTag(tag) {
   try {
-    // TODO: uncomment this !!!!!!!!!!!!!!!!!!!!!!!!!
-
-    // const res = await API.delete(`/api/monitor/tag/${tagId}`);
-    toast.success(`Successfully deleted tag: ${tag.name}`);
+    await API.delete(`/api/monitor/tags/${tag._id}`);
+    toast.success(`Successfully deleted tag: '${tag.name}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
     toast.error(apiError || err.message);

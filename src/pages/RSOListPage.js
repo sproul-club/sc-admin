@@ -56,24 +56,20 @@ async function downloadRSOList() {
   fileDownload(res.data, 'rso_emails.csv');
 }
 
-async function addRSOEmail(rsoEmail) {
+async function addRSOEmail(email) {
   try {
-    // TODO: uncomment this !!!!!!!!!!!!!!!!!!!!!!!!!
-
-    // const res = await API.delete(`/api/monitor/rso/${rsoEmail}`);
-    toast.success(`Successfully added RSO email: ${rsoEmail}`);
+    await API.post(`/api/monitor/rso`, { email });
+    toast.success(`Successfully added RSO email: '${email}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
     toast.error(apiError || err.message);
   }
 }
 
-async function deleteRSOEmail(rsoEmail) {
+async function deleteRSOEmail(email) {
   try {
-    // TODO: uncomment this !!!!!!!!!!!!!!!!!!!!!!!!!
-
-    // const res = await API.delete(`/api/monitor/rso/${rsoEmail}`);
-    toast.success(`Successfully deleted RSO email: ${rsoEmail}`);
+    await API.delete(`/api/monitor/rso/${email}`);
+    toast.success(`Successfully deleted RSO email: '${email}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
     toast.error(apiError || err.message);
