@@ -60,6 +60,8 @@ function useSimplePaginator(data, itemsPerPage, preview) {
     setPageView(data.slice(pageIndex, pageIndex + itemsPerPage));
   }, [data, pageNum, itemsPerPage]);
 
+  useEffect(() => setPageNum(1), [data]);
+
   const nextPage = () => pageNum < numPages && setPageNum(pageNum + 1);
   const prevPage = () => pageNum > 1 && setPageNum(pageNum - 1);
 
