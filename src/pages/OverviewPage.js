@@ -50,18 +50,25 @@ const StatCard = ({ label, number, arrow = null, helpText = null, isLoaded = fal
 );
 
 async function fetchStats() {
-  const [signUpStats, activityStats, performanceStats] = await Promise.all([
+  const [signUpStats, activityStats] = await Promise.all([
     API.get('/api/monitor/overview/stats/sign-up'),
-    API.get('/api/monitor/overview/stats/activity'),
-    API.get('/api/monitor/overview/stats/performance'),
+    API.get('/api/monitor/overview/stats/activity')
   ]);
 
   return {
     signUp: signUpStats.data.main,
     recentSignUp: signUpStats.data.changed,
     activity: activityStats.data,
-    performance: performanceStats.data,
   }
+}
+
+function getStatArrow(value) {
+  if (value > 0)
+    return 'increase';
+  else if (value < 0)
+    return 'decrease';
+  else
+    return null;
 }
 
 const OverviewStatsDashboard = ({ stats, reload }) => (
@@ -71,22 +78,34 @@ const OverviewStatsDashboard = ({ stats, reload }) => (
     pl={`${SIDE_PADDING}px`}
   >
     <TitleHeading onReload={reload}>Sign Up</TitleHeading>
-    <Grid templateColumns="repeat(3, 1fr)" gap={CARD_GAP}>
+    <Grid templateColumns="repeat(5, 1fr)" gap={CARD_GAP}>
       <StatCard
         label="Number of clubs registered"
         number={stats.signUp.clubs_registered}
-        arrow={stats.recentSignUp.clubs_registered >= 0 ? "increase" : "decrease"}
+        arrow={getStatArrow(stats.recentSignUp.clubs_registered)}
         helpText={`${Math.abs(stats.recentSignUp.clubs_registered)} from past week`}
       />
       <StatCard
         label="Number of confirmed clubs"
         number={stats.signUp.clubs_confirmed}
-        arrow={stats.recentSignUp.clubs_confirmed >= 0 ? "increase" : "decrease"}
+        arrow={getStatArrow(stats.recentSignUp.clubs_confirmed)}
         helpText={`${Math.abs(stats.recentSignUp.clubs_confirmed)} from past week`}
       />
       <StatCard
         label="Number of clubs on RSO list"
         number={stats.signUp.clubs_rso_list}
+      />
+      <StatCard
+        label="Number of students registered"
+        number={stats.signUp.students_signed_up}
+        arrow={getStatArrow(stats.recentSignUp.students_signed_up)}
+        helpText={`${Math.abs(stats.recentSignUp.students_signed_up)} from past week`}
+      />
+      <StatCard
+        label="Number of students confirmed"
+        number={stats.signUp.students_confirmed}
+        arrow={getStatArrow(stats.recentSignUp.students_confirmed)}
+        helpText={`${Math.abs(stats.recentSignUp.students_confirmed)} from past week`}
       />
     </Grid>
 
@@ -105,26 +124,6 @@ const OverviewStatsDashboard = ({ stats, reload }) => (
       <StatCard
         label="Number of searches"
         number={stats.activity.catalog_searches}
-      />
-    </Grid>
-
-    <Box padding={`${SECTION_PADDING}px`} />
-
-    <TitleHeading>Performance</TitleHeading>
-    <Grid templateColumns="repeat(3, 1fr)" gap={CARD_GAP}>
-      <StatCard
-        label="Uptime"
-        number={stats.performance.uptime_percent === 'N/A' ? 'N/A' : `${stats.performance.uptime_percent}%`}
-        helpText="since 3 months"
-      />
-      <StatCard
-        label="Number of API calls"
-        number={stats.performance.api_calls}
-        helpText="from past 30 minutes"
-      />
-      <StatCard
-        label="Amount of data stored"
-        number={stats.performance.data_stored === 'N/A' ? 'N/A' : `${stats.performance.data_stored} KB`}
       />
     </Grid>
   </Stack>
