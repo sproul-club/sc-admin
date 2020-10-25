@@ -85,35 +85,37 @@ const TOKENS = {
 class AuthManager {
   constructor({
     accessAuthToken,
-    refreshAuthToken,
-    afterSignIn = () => {},
-    afterSignOut = () => {},
+    refreshAuthToken
   }) {
     this.accessToken = accessAuthToken;
     this.refreshToken = refreshAuthToken;
-
-    this.afterSignIn = afterSignIn;
-    this.afterSignOut = afterSignOut;
   }
 
   isLoggedIn() {
     const hasAccess = this.accessToken.exists() && !this.accessToken.hasExpired();
+    return hasAccess;
+  }
+
+  isFullyLoggedIn() {
     const hasRefresh = this.refreshToken.exists() && !this.refreshToken.hasExpired();
-    return hasAccess && hasRefresh;
+    return this.isLoggedIn() && hasRefresh;
   }
 
-  signIn({ access, refresh }) {
-    this.accessToken.set(access.token, access.expires);
-    this.refreshToken.set(refresh.token, refresh.expires);
+  async signIn({ email, password }) {
+    const res = await API.post('/api/monitor/login', { email, password });
 
-    this.afterSignIn();
+    this.accessToken.set(res.data.access, res.data.access_expires_in);
+    this.refreshToken.set(res.data.refresh, res.data.refresh_expires_in);
   }
 
-  signOut() {
+  async signOut(useBackend = true) {
+    if (useBackend) {
+      await API.delete('/api/user/revoke-access', TOKENS.access.fullHeaderConfig());
+      await API.delete('/api/user/revoke-refresh', TOKENS.refresh.fullHeaderConfig());
+    }
+
     this.accessToken.delete();
     this.refreshToken.delete();
-
-    this.afterSignOut()
   }
 }
 

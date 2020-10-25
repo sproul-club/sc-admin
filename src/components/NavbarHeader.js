@@ -5,6 +5,7 @@ import logo from '../assets/logo.png';
 import { ROUTE_CONFIG } from '../routes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faDog, faBug } from '@fortawesome/free-solid-svg-icons';
+import { navigate } from 'hookrouter';
 import { GlobalAuthManager } from '../utils/GlobalAuthManager';
 
 const THIRD_PARTY_LINKS = {
@@ -43,6 +44,11 @@ const RouteLinkCollection = ({ showMenu, config }) => {
       {routeItems}
     </Box>
   );
+}
+
+async function signOut() {
+  await GlobalAuthManager.signOut();
+  navigate(ROUTE_CONFIG.LOGIN.path);
 }
 
 const NavbarHeader = () => {
@@ -99,7 +105,7 @@ const NavbarHeader = () => {
             </a>
           </Button>
 
-          <Button bg="transparent" border="1px" onClick={() => GlobalAuthManager.signOut()}>
+          <Button bg="transparent" border="1px" onClick={signOut}>
             Log out
           </Button>
         </ButtonGroup>

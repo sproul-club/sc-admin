@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useTitle } from 'hookrouter';
+import { useTitle, navigate } from 'hookrouter';
+import { ROUTE_CONFIG } from '../routes';
 
 import {  Flex, Stack, Image } from '@chakra-ui/core';
 import { Heading, InputGroup, InputRightElement } from '@chakra-ui/core';
@@ -11,29 +12,32 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { GlobalAuthManager } from '../utils/GlobalAuthManager';
 
+import { toast } from 'react-toastify';
+
 const LoginPage = () => {
   useTitle('Login - sproul.club Dashboard');
 
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
 
     const email = event.target.email.value;
     const password = event.target.password.value;
 
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      await GlobalAuthManager.signIn({ email, password });
 
-      if (email === 'admin@gmail.com' && password === 'admin') {
-        GlobalAuthManager.signIn({
-          access: { token: 'example-token-access', expires: 3 * 1000000 },
-          refresh: { token: 'example-token-refresh', expires: 3 * 10000000 }
-        });
-      }
-    }, 3000);
+      setIsSubmitting(false);
+      navigate(ROUTE_CONFIG.HOME.path);
+    } catch (err) {
+      const apiError = err.response && err.response.data && err.response.data.reason;
+      toast.error(apiError || err.message);
+
+      setIsSubmitting(false);
+    }
   }
 
   return (
