@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useRoutes, useRedirect, navigate } from 'hookrouter';
+import { setBasepath, useRoutes, useRedirect, navigate } from 'hookrouter';
 import { ROUTE_MAP, ROUTE_CONFIG } from './routes';
 
 import { theme, ChakraProvider } from '@chakra-ui/core';
@@ -12,6 +12,13 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalAuthManager } from './utils/GlobalAuthManager';
+
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  // dev code
+} else {
+  // production code
+  setBasepath('/sc-admin');
+}
 
 function App() {
   useRedirect('/', ROUTE_CONFIG.LOGIN.path);

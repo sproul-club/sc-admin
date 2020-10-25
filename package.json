@@ -2,6 +2,7 @@
   "name": "sc-admin-app",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://sproul-club.github.io/sc-admin",
   "dependencies": {
     "@chakra-ui/core": "^1.0.0-rc.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
@@ -28,7 +29,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,5 +47,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
   }
 }
