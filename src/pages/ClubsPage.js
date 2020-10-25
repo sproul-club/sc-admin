@@ -54,7 +54,7 @@ async function downloadClubs() {
 
 async function deleteClub(club) {
   try {
-    await API.delete(`/api/monitor/club/${club.owner}`);
+    await API.delete(`/api/monitor/club/${club.email}`);
     toast.success(`Successfully deleted club: '${club.name}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
@@ -71,7 +71,7 @@ const ClubRow = ({ club, onRequestDelete }) => (
     </TableCell>
     <TableCell>
       <Text fontSize="md" color="gray.500">
-        {club.owner}
+        {club.email}
       </Text>
     </TableCell>
     <TableCell bg={club.confirmed ? "green.200" : "red.200"}>
@@ -104,7 +104,7 @@ const DeleteClubModal = ({ club = null, ctrl, onDelete }) => (
     onDelete={() => onDelete(club)}
     fields={{
       'Club Name': club.name,
-      'Club Email': club.owner,
+      'Club Email': club.email,
     }}
   />
 );
