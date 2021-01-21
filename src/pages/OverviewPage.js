@@ -8,7 +8,7 @@ import {
   StatNumber,
   StatHelpText,
   StatArrow,
-} from "@chakra-ui/core";
+} from '@chakra-ui/react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';

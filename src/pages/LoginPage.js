@@ -4,13 +4,13 @@ import { ROUTE_CONFIG } from '../routes';
 
 import {  Flex, Stack, Image } from '@chakra-ui/react';
 import { Heading, InputGroup, InputRightElement } from '@chakra-ui/react';
-import { Input, Button } from "@chakra-ui/core";
+import { Input, Button } from '@chakra-ui/react';
 
 import logo from '../assets/logo.png';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { GlobalAuthManager } from '../utils/GlobalAuthManager';
+import { GlobalAuthManager } from '../utils/backendClient';
 
 import { toast } from 'react-toastify';
 

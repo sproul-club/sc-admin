@@ -3,7 +3,7 @@
  * Modified from Codepen source: https://codesandbox.io/s/upbeat-christian-3hbgp?file=/src/Table/Table.tsx
  */
 
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 import React from "react";
 
 /**

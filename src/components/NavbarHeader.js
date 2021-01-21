@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Button, ButtonGroup, Heading, Flex, Text, Image } from "@chakra-ui/core";
+import { Box, Button, ButtonGroup, Heading, Flex, Text, Image } from '@chakra-ui/react';
 import { A, usePath } from 'hookrouter';
 import logo from '../assets/logo.png';
 import { ROUTE_CONFIG } from '../routes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faDog, faBug } from '@fortawesome/free-solid-svg-icons';
 import { navigate } from 'hookrouter';
-import { GlobalAuthManager } from '../utils/GlobalAuthManager';
+import { GlobalAuthManager } from '../utils/backendClient';
 
 const THIRD_PARTY_LINKS = {
   SCOUT_APM: 'https://scoutapm.com/apps/182171',

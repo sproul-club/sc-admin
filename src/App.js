@@ -11,7 +11,7 @@ import ErrorPage from './pages/ErrorPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { GlobalAuthManager } from './utils/GlobalAuthManager';
+import { GlobalAuthManager } from './utils/backendClient';
 
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   // dev code
