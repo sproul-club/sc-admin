@@ -5,7 +5,7 @@ import {
   Input,
   Stack,
   Heading,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 import {
   Modal,
@@ -15,7 +15,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 import { useDiffCheck } from '../utils/hooks';
 

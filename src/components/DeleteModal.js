@@ -6,7 +6,7 @@ import {
   Heading,
   Stack,
   Text
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 import {
   Modal,
@@ -16,7 +16,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 import {
   Popover,
@@ -26,7 +26,7 @@ import {
   PopoverBody,
   PopoverArrow,
   PopoverCloseButton,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 const DeleteModal = ({ title, fields, ctrl, onDelete }) => (
   <Modal

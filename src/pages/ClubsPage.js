@@ -10,7 +10,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 import {
   Table,
@@ -21,7 +21,7 @@ import {
   TableRow
 } from '../components/Table';
 
-import { useDisclosure } from '@chakra-ui/core';
+import { useDisclosure } from '@chakra-ui/react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faChevronDown, faSync, faTrash } from '@fortawesome/free-solid-svg-icons';

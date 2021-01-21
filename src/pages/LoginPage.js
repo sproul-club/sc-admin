@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useTitle, navigate } from 'hookrouter';
 import { ROUTE_CONFIG } from '../routes';
 
-import {  Flex, Stack, Image } from '@chakra-ui/core';
-import { Heading, InputGroup, InputRightElement } from '@chakra-ui/core';
+import {  Flex, Stack, Image } from '@chakra-ui/react';
+import { Heading, InputGroup, InputRightElement } from '@chakra-ui/react';
 import { Input, Button } from "@chakra-ui/core";
 
 import logo from '../assets/logo.png';

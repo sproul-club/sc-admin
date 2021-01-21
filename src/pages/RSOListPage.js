@@ -6,14 +6,14 @@ import {
   Flex,
   Stack,
   Button,
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 import {
   Menu,
   MenuButton,
   MenuList,
   MenuItem
-} from '@chakra-ui/core';
+} from '@chakra-ui/react';
 
 import {
   Table,
@@ -24,7 +24,7 @@ import {
   TableRow
 } from '../components/Table';
 
-import { useDisclosure } from '@chakra-ui/core';
+import { useDisclosure } from '@chakra-ui/react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faDownload, faSync, faChevronDown, faTrash } from '@fortawesome/free-solid-svg-icons';

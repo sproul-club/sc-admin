@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Flex, Stack, Box, Heading, Icon } from '@chakra-ui/core';
+import { Flex, Stack, Box, Heading, Icon } from '@chakra-ui/react';
 
 const ERROR_MESSAGES = {
   404: 'Oh no! This page does not exist!',

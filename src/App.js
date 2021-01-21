@@ -3,7 +3,7 @@ import React from 'react';
 import { setBasepath, useRoutes, useRedirect, navigate } from 'hookrouter';
 import { ROUTE_MAP, ROUTE_CONFIG } from './routes';
 
-import { theme, ChakraProvider } from '@chakra-ui/core';
+import { theme, ChakraProvider } from '@chakra-ui/react';
 import NavbarHeader from './components/NavbarHeader';
 
 import ErrorPage from './pages/ErrorPage';

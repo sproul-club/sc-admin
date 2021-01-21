@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTitle } from 'hookrouter';
-import { Heading, Box, Flex, Grid, Stack, Button } from '@chakra-ui/core';
+import { Heading, Box, Flex, Grid, Stack, Button } from '@chakra-ui/react';
 
 import {
   Stat,
