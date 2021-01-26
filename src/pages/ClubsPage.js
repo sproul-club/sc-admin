@@ -79,6 +79,11 @@ const ClubRow = ({ club, onRequestDelete }) => (
         {club.confirmed ? "Yes" : "No"}
       </Text>
     </TableCell>
+    <TableCell bg={club.reactivated ? "green.200" : "red.200"}>
+      <Text textAlign="center" fontSize="md" color="gray.500">
+        {club.reactivated ? "Yes" : "No"}
+      </Text>
+    </TableCell>
     <TableCell textAlign="center">
       <Menu>
         <MenuButton as={Button} variant="ghost">
@@ -156,6 +161,7 @@ const ClubListComponent = ({ clubs, setClubList }) => {
               <TableHeader>Club name</TableHeader>
               <TableHeader>Club email</TableHeader>
               <TableHeader>Confirmed?</TableHeader>
+              <TableHeader>Reactivated?</TableHeader>
               <TableHeader>Actions</TableHeader>
             </TableRow>
           </TableHead>
