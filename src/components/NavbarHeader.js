@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Button, ButtonGroup, Heading, Flex, Text, Image } from '@chakra-ui/react';
+import { Box, Button, ButtonGroup, Heading, Flex, Text, Image, Stack } from '@chakra-ui/react';
 import { A, usePath } from 'hookrouter';
 import logo from '../assets/logo.png';
 import { ROUTE_CONFIG } from '../routes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faDog, faBug } from '@fortawesome/free-solid-svg-icons';
 import { navigate } from 'hookrouter';
-import { GlobalAuthManager } from '../utils/backendClient';
+import { GlobalAPI } from '../utils/backendClient';
 
 const THIRD_PARTY_LINKS = {
   SCOUT_APM: 'https://scoutapm.com/apps/182171',
@@ -47,7 +47,7 @@ const RouteLinkCollection = ({ showMenu, config }) => {
 }
 
 async function signOut() {
-  await GlobalAuthManager.signOut();
+  await GlobalAPI.signOut();
   navigate(ROUTE_CONFIG.LOGIN.path);
 }
 
@@ -90,25 +90,27 @@ const NavbarHeader = () => {
         display={{ sm: showMenu ? "block" : "none", md: "block" }}
         mt={{ base: 4, md: 0 }}
       >
-        <ButtonGroup>
-          <Button bg="orange.300" border="1px">
-            <a href={THIRD_PARTY_LINKS.SCOUT_APM}>
-              <FontAwesomeIcon icon={faDog}/>
-              <span>{"  "}Scout APM</span>
-            </a>
-          </Button>
+        <Stack direction="row">
+          <ButtonGroup>
+            <Button bg="orange.300" border="1px">
+              <a href={THIRD_PARTY_LINKS.SCOUT_APM}>
+                <FontAwesomeIcon icon={faDog}/>
+                <span>{"  "}Scout APM</span>
+              </a>
+            </Button>
 
-          <Button bg="purple.700" border="1px">
-            <a href={THIRD_PARTY_LINKS.SENTRY_IO}>
-              <FontAwesomeIcon icon={faBug}/>
-              <span>{"  "}Sentry.IO</span>
-            </a>
-          </Button>
+            <Button bg="purple.700" border="1px">
+              <a href={THIRD_PARTY_LINKS.SENTRY_IO}>
+                <FontAwesomeIcon icon={faBug}/>
+                <span>{"  "}Sentry.IO</span>
+              </a>
+            </Button>
 
-          <Button bg="transparent" border="1px" onClick={signOut}>
-            Log out
-          </Button>
-        </ButtonGroup>
+            <Button bg="transparent" border="1px" onClick={signOut}>
+              Log out
+            </Button>
+          </ButtonGroup>
+        </Stack>
       </Box>
     </Flex>
   );

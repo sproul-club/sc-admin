@@ -1,22 +1,24 @@
 import axios from 'axios';
-// import { createBrowserHistory } from 'history';
+import { navigate } from 'hookrouter';
 
-const LOCAL_URL = 'https://sc-backend.ngrok.io';
-const DEV_URL = 'https://sc-backend-dev.herokuapp.com';
-const PROD_URL = 'https://sc-backend-prod.herokuapp.com';
+const DEFAULT_STARTING_MODE = 'PROD';
 
-const ACCESS_TOKEN_KEY = 'token';
-const REFRESH_TOKEN_KEY = 'refreshToken';
-const ACCESS_TOKEN_EXPIRE_KEY = 'expiresAt';
-const REFRESH_TOKEN_EXPIRE_KEY = 'refreshExpiresAt';
+const BASE_URLS = {
+  'LOCAL': 'https://sc-backend.ngrok.io',
+  'DEV': 'https://sc-backend-dev.herokuapp.com',
+  'PROD': 'https://sc-backend-prod.herokuapp.com',
+};
+
+const BASE_URL_ENG = {
+  'LOCAL': 'Local',
+  'DEV': 'Development',
+  'PROD': 'Production',
+}
 
 class AuthToken {
-  constructor(tokenType, expiresAtKey, API) {
-    this.tokenKey = tokenType;
-    this.expireKey = expiresAtKey;
-    this.API = API;
-
-    this.initializeAccessHeader();
+  constructor(label) {
+    this.tokenKey = label + 'Token';
+    this.expireKey = label + 'ExpiresAt';
   }
 
   set(token, expiresIn) {
@@ -25,18 +27,10 @@ class AuthToken {
       this.expireKey,
       new Date().getTime() + expiresIn * 1000
     );
-
-    this.initializeAccessHeader();
   }
 
   get() {
     return localStorage.getItem(this.tokenKey);
-  }
-
-  initializeAccessHeader() {
-    let token = this.get();
-    if (this.tokenKey === ACCESS_TOKEN_KEY && token)
-      this.API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 
   exists() {
@@ -55,108 +49,126 @@ class AuthToken {
     };
   }
 
-  expiresAt() {
-    return localStorage.getItem(this.expireKey);
-  }
-
-  hasExpired() {
-    let currentTime = new Date().getTime();
-    return currentTime > this.expiresAt();
-  }
-
   delete() {
     localStorage.setItem(this.tokenKey, '');
     localStorage.setItem(this.expireKey, -1);
-
-    if (this.tokenKey === ACCESS_TOKEN_KEY)
-      delete this.API.defaults.headers.common['Authorization'];
   }
 }
 
-const API = axios.create({
-  baseURL: PROD_URL,
-  headers: {
-    accept: 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Content-Type': 'application/json',
-  },
-});
+class API {
+  constructor() {
+    this.tokens = {
+      access: new AuthToken('access'),
+      refresh: new AuthToken('refresh'),
+    };
 
-const TOKENS = {
-  access: new AuthToken(ACCESS_TOKEN_KEY, ACCESS_TOKEN_EXPIRE_KEY, API),
-  refresh: new AuthToken(REFRESH_TOKEN_KEY, REFRESH_TOKEN_EXPIRE_KEY, API),
-};
+    this.api = axios.create({
+      baseURL: BASE_URLS[DEFAULT_STARTING_MODE],
+      headers: {
+        accept: 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+    });
 
-async function tryRefreshAccessToken() {
-  try {
-    // Try fetching new access token with refresh token
-    const res = await API.post('/api/user/refresh', {}, TOKENS.refresh.fullHeaderConfig());
-    TOKENS.access.set(res.data.access, res.data.access_expires_in);
-  } catch (err) {
-    // Refresh token has expired, log the user out
-    TOKENS.access.delete();
-    TOKENS.refresh.delete();
-
-    // Return to main page
-    // createBrowserHistory().push('/');
-  }
-}
-
-API.interceptors.response.use(res => res, async err => {
-  const badToken = err.response.status == 401;
-  const isAuthToken = err.config.headers['Authorization'] == TOKENS.access.header();
-  console.log('isAuthToken', isAuthToken);
-  
-  if (badToken && isAuthToken) {
-    await tryRefreshAccessToken();
-    err.config.headers['Authorization'] = TOKENS.access.header();
-
-    return axios.request(err.config);
+    this._installRefreshMiddleware();
+    this._initBaseMode()
+    this._updateAccessHeader();
   }
 
-  throw err;
-});
-
-class AuthManager {
-  constructor({
-    accessAuthToken,
-    refreshAuthToken
-  }) {
-    this.accessToken = accessAuthToken;
-    this.refreshToken = refreshAuthToken;
+  _initBaseMode() {
+    let currentMode = this.getMode();
+    if (!currentMode) {
+      this.switch(DEFAULT_STARTING_MODE);
+      currentMode = DEFAULT_STARTING_MODE;
+    } else
+      this.switch(currentMode);
   }
 
+  _updateAccessHeader() {
+    const accessToken = this.tokens.access.get();
+
+    if (!!accessToken)
+      this.api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+    else
+      delete this.api.defaults.headers.common['Authorization'];
+  }
+
+  async _tryRefreshAccessToken() {
+    try {
+      // Try fetching new access token with refresh token
+      const res = await this.api.post('/api/user/refresh', {}, this.tokens.refresh.fullHeaderConfig());
+      this.tokens.access.set(res.data.access, res.data.access_expires_in);
+    } catch (err) {
+      // Refresh token has expired, log the user out
+      this.tokens.access.delete();
+      this.tokens.refresh.delete();
+
+      // Return to main page
+      navigate('/login');
+    }
+  }
+
+  _installRefreshMiddleware() {
+    this.api.interceptors.response.use(res => res, async err => {
+      const badToken = err.response.status === 401;
+      const isAuthToken = err.config.headers['Authorization'] === this.tokens.access.header();
+      
+      if (badToken && isAuthToken) {
+        await this._tryRefreshAccessToken();
+        err.config.headers['Authorization'] = this.tokens.access.header();
+
+        return axios.request(err.config);
+      }
+
+      throw err;
+    });
+  }
+
+  getMode() {
+    return localStorage.getItem('base-mode');
+  }
+
+
+  switch(newMode) {
+    if (!(newMode in BASE_URLS))
+      throw new Error(`Invalid mode for API: '${newMode}'`)
+
+    localStorage.setItem('base-mode', newMode);
+    this.api.defaults.baseURL = BASE_URLS[newMode];
+  }
+
+  client() {
+    return this.api;
+  }
+
+  // Auth endpoints
   isLoggedIn() {
-    const hasAccess = this.accessToken.exists() && !this.accessToken.hasExpired();
-    return hasAccess;
-  }
-
-  isFullyLoggedIn() {
-    const hasRefresh = this.refreshToken.exists() && !this.refreshToken.hasExpired();
-    return this.isLoggedIn() && hasRefresh;
+    return this.tokens.access.exists();
   }
 
   async signIn({ email, password }) {
-    const res = await API.post('/api/monitor/login', { email, password });
+    const res = await this.api.post('/api/monitor/login', { email, password });
 
-    this.accessToken.set(res.data.access, res.data.access_expires_in);
-    this.refreshToken.set(res.data.refresh, res.data.refresh_expires_in);
+    this.tokens.access.set(res.data.access, res.data.access_expires_in);
+    this.tokens.refresh.set(res.data.refresh, res.data.refresh_expires_in);
+
+    this._updateAccessHeader()
   }
 
   async signOut(useBackend = true) {
     if (useBackend) {
-      await API.delete('/api/user/revoke-access', TOKENS.access.fullHeaderConfig());
-      await API.delete('/api/user/revoke-refresh', TOKENS.refresh.fullHeaderConfig());
+      await this.api.delete('/api/user/revoke-access', this.tokens.access.fullHeaderConfig());
+      await this.api.delete('/api/user/revoke-refresh', this.tokens.refresh.fullHeaderConfig());
     }
 
-    this.accessToken.delete();
-    this.refreshToken.delete();
+    this.tokens.access.delete();
+    this.tokens.refresh.delete();
+
+    this._updateAccessHeader()
   }
 }
 
-const GlobalAuthManager = new AuthManager({
-  accessAuthToken: TOKENS.access,
-  refreshAuthToken: TOKENS.refresh
-});
+const GlobalAPI = new API();
 
-export { API, TOKENS, GlobalAuthManager };
+export { GlobalAPI, BASE_URLS, BASE_URL_ENG };

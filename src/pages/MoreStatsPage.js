@@ -7,7 +7,7 @@ import ChartComponent from 'react-chartjs-2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
-import { API } from '../utils/backendClient';
+import { GlobalAPI } from '../utils/backendClient';
 import DataLoaderPage from './DataLoaderPage';
 
 const BG_RAINBOW_COLORS = [
@@ -32,10 +32,10 @@ const BORDER_RAINBOW_COLORS = [
 
 async function fetchMoreStats() {
   const [tagUsage, socialMediaUsage, clubReqStats, picStats] = await Promise.all([
-    API.get('/api/monitor/tags/list'),
-    API.get('/api/monitor/more-stats/social-media'),
-    API.get('/api/monitor/more-stats/club-reqs'),
-    API.get('/api/monitor/more-stats/pic-stats'),
+    GlobalAPI.client().get('/api/monitor/tags/list'),
+    GlobalAPI.client().get('/api/monitor/more-stats/social-media'),
+    GlobalAPI.client().get('/api/monitor/more-stats/club-reqs'),
+    GlobalAPI.client().get('/api/monitor/more-stats/pic-stats'),
   ]);
 
   return {

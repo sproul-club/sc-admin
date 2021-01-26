@@ -29,7 +29,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faDownload, faSync, faChevronDown, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-import { API } from '../utils/backendClient';
+import { GlobalAPI } from '../utils/backendClient';
 import fileDownload from 'js-file-download';
 import { useSearch, useSimplePaginator } from '../utils/hooks';
 import DataLoaderPage from './DataLoaderPage';
@@ -45,12 +45,12 @@ const SEARCH_DELAY = 500;
 const NUM_EMAILS_SHOWN = 10;
 
 async function fetchRSOList() {
-  const res = await API.get('/api/monitor/rso/list');
+  const res = await GlobalAPI.client().get('/api/monitor/rso/list');
   return res.data;
 }
 
 async function downloadRSOList() {
-  const res = await API.get('/api/monitor/rso/download');
+  const res = await GlobalAPI.client().get('/api/monitor/rso/download');
 
   // NOTE: Not a synchronous call!
   fileDownload(res.data, 'rso_emails.csv');
@@ -58,7 +58,7 @@ async function downloadRSOList() {
 
 async function addRSOEmail(email) {
   try {
-    await API.post(`/api/monitor/rso`, { email });
+    await GlobalAPI.client().post(`/api/monitor/rso`, { email });
     toast.success(`Successfully added RSO email: '${email}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
@@ -68,7 +68,7 @@ async function addRSOEmail(email) {
 
 async function deleteRSOEmail(email) {
   try {
-    await API.delete(`/api/monitor/rso/${email}`);
+    await GlobalAPI.client().delete(`/api/monitor/rso/${email}`);
     toast.success(`Successfully deleted RSO email: '${email}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;

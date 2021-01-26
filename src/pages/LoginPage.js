@@ -4,13 +4,13 @@ import { ROUTE_CONFIG } from '../routes';
 
 import {  Flex, Stack, Image } from '@chakra-ui/react';
 import { Heading, InputGroup, InputRightElement } from '@chakra-ui/react';
-import { Input, Button } from '@chakra-ui/react';
+import { Input, Button, Select } from '@chakra-ui/react';
 
 import logo from '../assets/logo.png';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { GlobalAuthManager } from '../utils/backendClient';
+import { GlobalAPI, BASE_URL_ENG } from '../utils/backendClient';
 
 import { toast } from 'react-toastify';
 
@@ -28,7 +28,7 @@ const LoginPage = () => {
     const password = event.target.password.value;
 
     try {
-      await GlobalAuthManager.signIn({ email, password });
+      await GlobalAPI.signIn({ email, password });
 
       setIsSubmitting(false);
       navigate(ROUTE_CONFIG.HOME.path);
@@ -46,6 +46,17 @@ const LoginPage = () => {
         <Stack bg="white" spacing={4} align="center" padding="32px">
           <Image src={logo} boxSize="192px" />
           <Heading as="h1" size="xl">Login</Heading>
+
+          <Select size="md"
+            defaultValue={GlobalAPI.getMode()}
+            onChange={(event) => {
+              const selectedMode = event.target.value;
+              GlobalAPI.switch(selectedMode);
+            }}>
+            {Object.entries(BASE_URL_ENG).map(([key, label]) => 
+              <option key={key} value={key} style={{color: 'black'}}>{label}</option>
+            )}
+          </Select>
 
           <Input
             name="email"

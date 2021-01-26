@@ -26,7 +26,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faChevronDown, faSync, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-import { API } from '../utils/backendClient';
+import { GlobalAPI } from '../utils/backendClient';
 import fileDownload from 'js-file-download';
 import { useSearch, useSimplePaginator } from '../utils/hooks';
 import DataLoaderPage from './DataLoaderPage';
@@ -41,12 +41,12 @@ const NUM_CLUBS_SHOWN = 10;
 const SEARCH_DELAY = 500;
 
 async function fetchClubs() {
-  const res = await API.get('/api/monitor/club/list');
+  const res = await GlobalAPI.client().get('/api/monitor/club/list');
   return res.data;
 }
 
 async function downloadClubs() {
-  const res = await API.get('/api/monitor/club/download');
+  const res = await GlobalAPI.client().get('/api/monitor/club/download');
 
   // NOTE: Not a synchronous call!
   fileDownload(res.data, 'clubs.csv');
@@ -54,7 +54,7 @@ async function downloadClubs() {
 
 async function deleteClub(club) {
   try {
-    await API.delete(`/api/monitor/club/${club.email}`);
+    await GlobalAPI.client().delete(`/api/monitor/club/${club.email}`);
     toast.success(`Successfully deleted club: '${club.name}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;

@@ -30,7 +30,7 @@ import { useDisclosure } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faChevronDown, faPlus, faEdit, faSync, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-import { API } from '../utils/backendClient';
+import { GlobalAPI } from '../utils/backendClient';
 import fileDownload from 'js-file-download';
 import { useSearch, useSimplePaginator } from '../utils/hooks';
 import DataLoaderPage from './DataLoaderPage';
@@ -46,12 +46,12 @@ const SEARCH_DELAY = 500;
 const NUM_TAGS_SHOWN = 10;
 
 async function fetchTags() {
-  const res = await API.get('/api/monitor/tags/list');
+  const res = await GlobalAPI.client().get('/api/monitor/tags/list');
   return res.data;
 }
 
 async function downloadTags() {
-  const res = await API.get('/api/monitor/tags/download');
+  const res = await GlobalAPI.client().get('/api/monitor/tags/download');
 
   // NOTE: Not a synchronous call!
   fileDownload(res.data, 'tags.csv');
@@ -59,7 +59,7 @@ async function downloadTags() {
 
 async function addTag(tag) {
   try {
-    await API.post(`/api/monitor/tags`, { name: tag.name });
+    await GlobalAPI.client().post(`/api/monitor/tags`, { name: tag.name });
     toast.success(`Successfully added tag: '${tag.name}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
@@ -69,7 +69,7 @@ async function addTag(tag) {
 
 async function editTag(tag, newTag) {
   try {
-    await API.put(`/api/monitor/tags/${tag._id}`, { name: newTag.name });
+    await GlobalAPI.client().put(`/api/monitor/tags/${tag._id}`, { name: newTag.name });
     toast.success(`Successfully changed tag name from '${tag.name}'' to '${newTag.name}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
@@ -79,7 +79,7 @@ async function editTag(tag, newTag) {
 
 async function deleteTag(tag) {
   try {
-    await API.delete(`/api/monitor/tags/${tag._id}`);
+    await GlobalAPI.client().delete(`/api/monitor/tags/${tag._id}`);
     toast.success(`Successfully deleted tag: '${tag.name}'!`);
   } catch (err) {
     const apiError = err.response && err.response.data && err.response.data.reason;
