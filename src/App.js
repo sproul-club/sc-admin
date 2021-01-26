@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { setBasepath, useRoutes, useRedirect, navigate } from 'hookrouter';
+import { setBasepath, useRoutes, useRedirect } from 'hookrouter';
 import { ROUTE_MAP, ROUTE_CONFIG } from './routes';
 
-import { theme, ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
 import NavbarHeader from './components/NavbarHeader';
 
 import ErrorPage from './pages/ErrorPage';
@@ -11,7 +11,7 @@ import ErrorPage from './pages/ErrorPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { GlobalAuthManager } from './utils/backendClient';
+import { GlobalAPI } from './utils/backendClient';
 
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   // dev code
@@ -26,12 +26,10 @@ function App() {
   const routeResult = useRoutes(ROUTE_MAP);
   const renderedPage = routeResult || <ErrorPage errorCode={404} />;
 
-  const isLoggedIn = GlobalAuthManager.isLoggedIn();
-  if (!isLoggedIn)
-    navigate('/login');
-
+  const isLoggedIn = GlobalAPI.isLoggedIn();
+  
   return (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider>
       <ToastContainer
         position="top-right"
         autoClose={5000}
