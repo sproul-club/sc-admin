@@ -2,13 +2,13 @@ import React from 'react';
 import { useTitle } from 'hookrouter';
 import { Heading, Box, Flex, Grid, Stack, Button } from '@chakra-ui/react';
 
-import ChartComponent from 'react-chartjs-2';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
 import { GlobalAPI } from '../utils/backendClient';
 import DataLoaderPage from './DataLoaderPage';
+
+import ReactEcharts from 'echarts-for-react';
 
 const BG_RAINBOW_COLORS = [
   'rgba(255, 99, 132, 0.2)',
@@ -58,158 +58,227 @@ function generateColors(numDataPoints, colorList) {
   return colors;
 }
 
-const DataChart = ({ type, title, data, dataLabels, dataDescription, bgColors, borderColors, showLegend = false }) => {
-  const chartData = {
-    labels: dataLabels,
-    datasets: [{
-      label: dataDescription,
-      data: data,
-      fill: false,
-      backgroundColor: bgColors,
-      borderColor: borderColors,
-      borderWidth: 1
-    }]
-  };
-
-  const chartOptions = {
-    title: {
-      display: true,
-      text: title,
-      fontSize: 18
-    },
-    legend: {
-      display: showLegend
-    },
-    responsive: true,
-    maintainAspectRatio: true,
-  };
-
-  return (
-    <ChartComponent
-      data={chartData}
-      options={chartOptions}
-      type={type}
-      height={50}
-      width={100}
-    />
-  );
-};
-
 const SocialMediaUsageChart = ({ stats }) => {
   const labels = Object.keys(stats);
   const data = Object.values(stats);
-  const numPoints = data.length;
 
-  const bgColors = generateColors(numPoints, BG_RAINBOW_COLORS);
-  const borderColors = generateColors(numPoints, BORDER_RAINBOW_COLORS);
+  const bgColors = generateColors(data.length, BG_RAINBOW_COLORS);
+  const borderColors = generateColors(data.length, BORDER_RAINBOW_COLORS);
+
+  const option = {
+    'title': {
+      text: 'Social Media Usage',
+      left: 'center',
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
+    grid: {
+      height: '100%',
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: [{
+      type: 'category',
+      data: labels,
+      axisTick: {
+        alignWithLabel: true
+      },
+      axisLabel: {
+        interval: 0
+      }
+    }],
+    yAxis: [{
+      type: 'value'
+    }],
+    series: [{
+      name: 'Count',
+      type: 'bar',
+      position: 'right',
+      barWidth: '80%',
+      data: data.map((value, i) => ({
+        value,
+        itemStyle: { color: bgColors[i], borderColor: borderColors[i] }
+      }))
+    }]
+  };
 
   return (
-    <DataChart
-      type="horizontalBar"
-      title="Social Media Usage"
-      data={data}
-      dataLabels={labels}
-      dataDescription="# of clubs"
-      bgColors={bgColors}
-      borderColors={borderColors}
-      showLegend />
+    <ReactEcharts option={option} />
   );
 };
 
 const TagUsageChart = ({ stats }) => {
   const labels = stats.map(tag => tag.name);
   const data = stats.map(tag => tag.num_clubs);
-  const numPoints = data.length;
 
-  const bgColors = generateColors(numPoints, BG_RAINBOW_COLORS);
-  const borderColors = generateColors(numPoints, BORDER_RAINBOW_COLORS);
+  const bgColors = generateColors(data.length, BG_RAINBOW_COLORS);
+  const borderColors = generateColors(data.length, BORDER_RAINBOW_COLORS);
+
+  const option = {
+    'title': {
+      text: 'Tag Usage',
+      left: 'center',
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
+    grid: {
+      height: '100%',
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: [{
+      type: 'category',
+      data: labels,
+      axisTick: {
+        alignWithLabel: true
+      },
+      axisLabel: {
+        interval: 0,
+        rotate: 30
+      }
+    }],
+    yAxis: [{
+      type: 'value'
+    }],
+    series: [{
+      name: 'Count',
+      type: 'bar',
+      barWidth: '80%',
+      data: data.map((value, i) => ({
+        value,
+        itemStyle: { color: bgColors[i], borderColor: borderColors[i] }
+      }))
+    }]
+  };
 
   return (
-    <DataChart
-      type="bar"
-      title="Tag Usage"
-      data={data}
-      dataLabels={labels}
-      dataDescription="# of clubs"
-      bgColors={bgColors}
-      borderColors={borderColors}
-      showLegend />
+    <ReactEcharts option={option} />
   );
 };
 
-const AppRequiredChart = ({ stats }) => {
-  const labels = ['Yes', 'No'];
-  const data = [stats.app_required, stats.no_app_required];
+const ApplicationXMembersHeatChart = ({ stats }) => {
+  const xLabels = ['Recruitment Open', 'Recruitment Closed'];
+  const yLabels = ['App Required', 'No App Required'];
+  const data = [
+    [0, 0, stats.app_required_and_new_members], 
+    [1, 0, stats.app_required_and_no_new_members],
+    [0, 1, stats.no_app_required_and_new_members],
+    [1, 1, stats.no_app_required_and_no_new_members],
+  ];
 
-  const bgColors = [BG_RAINBOW_COLORS[3], BG_RAINBOW_COLORS[0]];
-  const borderColors = [BORDER_RAINBOW_COLORS[3], BORDER_RAINBOW_COLORS[0]];
+  const option = {
+    'title': {
+      text: 'Recruitment & Application Status',
+      left: 'center',
+    },
+    grid: {
+      height: '50%',
+      containLabel: true,
+    },
+    xAxis: {
+      type: 'category',
+      data: xLabels
+    },
+    yAxis: {
+      type: 'category',
+      data: yLabels
+    },
+    visualMap: {
+      min: 0,
+      max: [...Object.values(stats)].reduce((acc, val) => acc + val),
+      orient: 'horizontal',
+      left: 'center',
+      inRange : {
+        color: ['rgb(255, 99, 132)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)']
+      }
+    },
+    series: [{
+      type: 'heatmap',
+      data: data,
+      label: {
+        show: true,
+        fontSize: 18
+      },
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }]
+  };
 
   return (
-    <DataChart
-      type="doughnut"
-      title="App Required?"
-      data={data}
-      dataLabels={labels}
-      dataDescription="# of clubs"
-      bgColors={bgColors}
-      borderColors={borderColors} />
+    <ReactEcharts option={option} />
   );
 }
 
-const NewMembersChart = ({ stats }) => {
-  const labels = ['Yes', 'No'];
-  const data = [stats.new_members, stats.no_new_members];
+const LogoXBannerUsageHeatChart = ({ stats }) => {
+  const xLabels = ['Has Logo Pic', 'No Logo Pic'];
+  const yLabels = ['Has Banner Pic', 'No Banner Pic'];
+  const data = [
+    [0, 0, stats.logo_pic_and_banner_pic], 
+    [1, 0, stats.logo_pic_and_no_banner_pic],
+    [0, 1, stats.no_logo_pic_and_banner_pic],
+    [1, 1, stats.no_logo_pic_and_no_banner_pic],
+  ];
 
-  const bgColors = [BG_RAINBOW_COLORS[3], BG_RAINBOW_COLORS[0]];
-  const borderColors = [BORDER_RAINBOW_COLORS[3], BORDER_RAINBOW_COLORS[0]];
+  const option = {
+    'title': {
+      text: 'Logo & Banner Usage',
+      left: 'center',
+    },
+    grid: {
+      height: '50%',
+      containLabel: true,
+    },
+    xAxis: {
+      type: 'category',
+      data: xLabels
+    },
+    yAxis: {
+      type: 'category',
+      data: yLabels
+    },
+    visualMap: {
+      min: 0,
+      max: [...Object.values(stats)].reduce((acc, val) => acc + val),
+      orient: 'horizontal',
+      left: 'center',
+      inRange : {   
+        color: ['rgb(255, 99, 132)', 'rgb(255, 205, 86)', 'rgb(75, 192, 192)']
+      }
+    },
+    series: [{
+      type: 'heatmap',
+      data: data,
+      label: {
+        show: true,
+        fontSize: 18
+      },
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }]
+  };
 
   return (
-    <DataChart
-      type="doughnut"
-      title="New Members?"
-      data={data}
-      dataLabels={labels}
-      dataDescription="# of clubs"
-      bgColors={bgColors}
-      borderColors={borderColors} />
-  );
-}
-
-const LogoUsageChart = ({ stats }) => {
-  const labels = ['Yes', 'No'];
-  const data = [stats.logo_pic, stats.no_logo_pic];
-
-  const bgColors = [BG_RAINBOW_COLORS[3], BG_RAINBOW_COLORS[0]];
-  const borderColors = [BORDER_RAINBOW_COLORS[3], BORDER_RAINBOW_COLORS[0]];
-
-  return (
-    <DataChart
-      type="doughnut"
-      title="Has Logo?"
-      data={data}
-      dataLabels={labels}
-      dataDescription="# of clubs"
-      bgColors={bgColors}
-      borderColors={borderColors} />
-  );
-}
-
-const BannerUsageChart = ({ stats }) => {
-  const labels = ['Yes', 'No'];
-  const data = [stats.banner_pic, stats.no_banner_pic];
-
-  const bgColors = [BG_RAINBOW_COLORS[3], BG_RAINBOW_COLORS[0]];
-  const borderColors = [BORDER_RAINBOW_COLORS[3], BORDER_RAINBOW_COLORS[0]];
-
-  return (
-    <DataChart
-      type="doughnut"
-      title="Has Banner?"
-      data={data}
-      dataLabels={labels}
-      dataDescription="# of clubs"
-      bgColors={bgColors}
-      borderColors={borderColors} />
+    <ReactEcharts option={option} />
   );
 }
 
@@ -233,21 +302,13 @@ const MoreStatsDashboard = ({ stats, reload }) => {
         </Card>
       </Grid>
 
-      <Grid templateColumns="repeat(4, 1fr)" gap={6}>
+      <Grid templateColumns="repeat(2, 1fr)" gap={6}>
         <Card>
-          <AppRequiredChart stats={stats.clubReqs} />
+          <ApplicationXMembersHeatChart stats={stats.clubReqs} />
         </Card>
 
         <Card>
-          <NewMembersChart stats={stats.clubReqs} />
-        </Card>
-
-        <Card>
-          <LogoUsageChart stats={stats.picStats} />
-        </Card>
-
-        <Card>
-          <BannerUsageChart stats={stats.picStats} />
+          <LogoXBannerUsageHeatChart stats={stats.picStats} />
         </Card>
       </Grid>
     </Stack>
