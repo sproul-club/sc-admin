@@ -119,7 +119,7 @@ const OverviewStatsDashboard = ({ stats, reload }) => {
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      data: [...Array(clubsRegisteredHistory.length).keys()].map(x => clubsRegisteredHistory.length - x - 1).map(x => `${x} weeks ago`),
+      data: [...Array(clubsRegisteredHistory.length).keys()].map(x => clubsRegisteredHistory.length - x - 1).map(x => `${x * 2} weeks ago`),
       axisLabel: {
         rotate: 30
       }

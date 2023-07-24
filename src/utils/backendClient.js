@@ -4,14 +4,14 @@ import { navigate } from 'hookrouter';
 const DEFAULT_STARTING_MODE = 'PROD';
 
 const BASE_URLS = {
-  'LOCAL': 'https://sc-backend.ngrok.io',
-  'DEV': 'https://sc-backend-dev.herokuapp.com',
-  'PROD': 'https://sc-backend-prod.herokuapp.com',
+  'LOCAL': 'https://relevant-united-bobcat.ngrok-free.app',
+  // 'DEV': 'https://sc-backend-dev.herokuapp.com',
+  'PROD': 'https://sc-backend-prod-deef21175f2b.herokuapp.com/',
 };
 
 const BASE_URL_ENG = {
   'LOCAL': 'Local',
-  'DEV': 'Development',
+  // 'DEV': 'Development',
   'PROD': 'Production',
 }
 
@@ -65,9 +65,10 @@ class API {
     this.api = axios.create({
       baseURL: BASE_URLS[DEFAULT_STARTING_MODE],
       headers: {
-        accept: 'application/json',
+        'accept': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'any',
       },
     });
 
@@ -97,7 +98,7 @@ class API {
   async _tryRefreshAccessToken() {
     try {
       // Try fetching new access token with refresh token
-      const res = await this.api.post('/api/user/refresh', {}, this.tokens.refresh.fullHeaderConfig());
+      const res = await this.api.post('/api/monitor/refresh', {}, this.tokens.refresh.fullHeaderConfig());
       this.tokens.access.set(res.data.access, res.data.access_expires_in);
     } catch (err) {
       // Refresh token has expired, log the user out
@@ -158,8 +159,8 @@ class API {
 
   async signOut(useBackend = true) {
     if (useBackend) {
-      await this.api.delete('/api/user/revoke-access', this.tokens.access.fullHeaderConfig());
-      await this.api.delete('/api/user/revoke-refresh', this.tokens.refresh.fullHeaderConfig());
+      await this.api.delete('/api/monitor/revoke-access', this.tokens.access.fullHeaderConfig());
+      await this.api.delete('/api/monitor/revoke-refresh', this.tokens.refresh.fullHeaderConfig());
     }
 
     this.tokens.access.delete();
