@@ -169,19 +169,19 @@ const OverviewStatsDashboard = ({ stats, reload }) => {
                 label="Number of clubs registered"
                 number={clubsRegistered}
                 arrow={getStatArrow(clubsRegisteredRecent)}
-                helpText={`${Math.abs(clubsRegisteredRecent)} from past week`}
+                helpText={`${Math.abs(clubsRegisteredRecent)} from past year`}
               />
               <StatCard
                 label="Number of confirmed clubs"
                 number={clubsConfirmed + ' / ' + clubsRegistered}
                 arrow={getStatArrow(clubsConfirmedRecent)}
-                helpText={`${Math.abs(clubsConfirmedRecent)} from past week`}
+                helpText={`${Math.abs(clubsConfirmedRecent)} from past year`}
               />
               <StatCard
                 label="Number of reactivated clubs"
                 number={clubsReactivated + ' / ' + clubsConfirmed}
                 arrow={getStatArrow(clubsReactivatedRecent)}
-                helpText={`${Math.abs(clubsReactivatedRecent)} from past week`}
+                helpText={`${Math.abs(clubsReactivatedRecent)} from past year`}
               />
               <StatCard
                 label="Number of clubs on RSO list"
